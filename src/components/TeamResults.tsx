@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Team } from "../types";
 import { Button } from "@/components/ui/button";
@@ -75,8 +76,8 @@ const TeamResults: React.FC<TeamResultsProps> = ({
           {showScores && (
             <div className="flex justify-around mb-4 text-sm">
               <div className="text-center">
-                <p className="font-semibold">Total Ranking</p>
-                <p className="text-lg font-bold">{teams[0].totalRanking}</p>
+                <p className="font-semibold">Total Skill</p>
+                <p className="text-lg font-bold">{teams[0].totalSkill}</p>
               </div>
               <div className="text-center">
                 <p className="font-semibold">Total Teamwork</p>
@@ -100,7 +101,7 @@ const TeamResults: React.FC<TeamResultsProps> = ({
                   <span className="font-medium">{player.name}</span>
                   {showScores && (
                     <span className="text-sm text-gray-600">
-                      R: {player.ranking} | T: {player.teamwork}
+                      S: {player.skill} | T: {player.teamwork}
                     </span>
                   )}
                 </div>
@@ -116,8 +117,8 @@ const TeamResults: React.FC<TeamResultsProps> = ({
           {showScores && (
             <div className="flex justify-around mb-4 text-sm">
               <div className="text-center">
-                <p className="font-semibold">Total Ranking</p>
-                <p className="text-lg font-bold">{teams[1].totalRanking}</p>
+                <p className="font-semibold">Total Skill</p>
+                <p className="text-lg font-bold">{teams[1].totalSkill}</p>
               </div>
               <div className="text-center">
                 <p className="font-semibold">Total Teamwork</p>
@@ -141,7 +142,7 @@ const TeamResults: React.FC<TeamResultsProps> = ({
                   <span className="font-medium">{player.name}</span>
                   {showScores && (
                     <span className="text-sm text-gray-600">
-                      R: {player.ranking} | T: {player.teamwork}
+                      S: {player.skill} | T: {player.teamwork}
                     </span>
                   )}
                 </div>
