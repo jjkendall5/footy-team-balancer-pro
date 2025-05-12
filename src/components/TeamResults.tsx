@@ -68,6 +68,10 @@ const TeamResults: React.FC<TeamResultsProps> = ({
       
       <h2 className="text-2xl font-bold text-center">Generated Teams</h2>
       
+      <div className="text-center text-sm text-gray-600 mb-4">
+        <p>All ratings use a scale of 1-10, with 10 being the highest. S = Skill, T = Teamwork</p>
+      </div>
+      
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Team A */}
         <div className="border rounded-lg p-4 bg-blue-50">
