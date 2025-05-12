@@ -6,10 +6,10 @@ export const generateTeams = (players: Player[]): [Team, Team] => {
   // Filter only available players
   const availablePlayers = players.filter(player => player.available);
   
-  // Sort players by combined score (ranking + teamwork) descending
+  // Sort players by combined score (skill + teamwork) descending
   const sortedPlayers = [...availablePlayers].sort((a, b) => {
-    const combinedScoreA = a.ranking + a.teamwork;
-    const combinedScoreB = b.ranking + b.teamwork;
+    const combinedScoreA = a.skill + a.teamwork;
+    const combinedScoreB = b.skill + b.teamwork;
     return combinedScoreB - combinedScoreA;
   });
 
@@ -17,32 +17,32 @@ export const generateTeams = (players: Player[]): [Team, Team] => {
   const teamA: Player[] = [];
   const teamB: Player[] = [];
   
-  let teamATotal = { ranking: 0, teamwork: 0 };
-  let teamBTotal = { ranking: 0, teamwork: 0 };
+  let teamATotal = { skill: 0, teamwork: 0 };
+  let teamBTotal = { skill: 0, teamwork: 0 };
 
   // Distribute players using alternating selection (best player to team A, 2nd best to team B, etc.)
   // Also considering the current team totals to balance teams
   sortedPlayers.forEach((player) => {
-    const playerValue = { ranking: player.ranking, teamwork: player.teamwork };
+    const playerValue = { skill: player.skill, teamwork: player.teamwork };
     
     // Calculate which team would be more balanced by adding this player
     const teamAProjected = {
-      ranking: teamATotal.ranking + playerValue.ranking,
+      skill: teamATotal.skill + playerValue.skill,
       teamwork: teamATotal.teamwork + playerValue.teamwork
     };
     
     const teamBProjected = {
-      ranking: teamBTotal.ranking + playerValue.ranking,
+      skill: teamBTotal.skill + playerValue.skill,
       teamwork: teamBTotal.teamwork + playerValue.teamwork
     };
     
     // Calculate absolute difference between teams if player joins team A
-    const diffIfJoinA = Math.abs((teamAProjected.ranking + teamAProjected.teamwork) - 
-                                 (teamBTotal.ranking + teamBTotal.teamwork));
+    const diffIfJoinA = Math.abs((teamAProjected.skill + teamAProjected.teamwork) - 
+                                 (teamBTotal.skill + teamBTotal.teamwork));
     
     // Calculate absolute difference between teams if player joins team B
-    const diffIfJoinB = Math.abs((teamATotal.ranking + teamATotal.teamwork) - 
-                                 (teamBProjected.ranking + teamBProjected.teamwork));
+    const diffIfJoinB = Math.abs((teamATotal.skill + teamATotal.teamwork) - 
+                                 (teamBProjected.skill + teamBProjected.teamwork));
     
     // Add player to the team that results in more balanced teams
     if (diffIfJoinA <= diffIfJoinB) {
@@ -57,12 +57,12 @@ export const generateTeams = (players: Player[]): [Team, Team] => {
   return [
     { 
       players: teamA, 
-      totalRanking: teamATotal.ranking, 
+      totalSkill: teamATotal.skill, 
       totalTeamwork: teamATotal.teamwork 
     },
     { 
       players: teamB, 
-      totalRanking: teamBTotal.ranking, 
+      totalSkill: teamBTotal.skill, 
       totalTeamwork: teamBTotal.teamwork 
     }
   ];
@@ -86,10 +86,10 @@ export const swapPlayers = (
   newTeams[1].players[teamBPlayerIndex] = teamAPlayer;
   
   // Recalculate totals
-  newTeams[0].totalRanking = newTeams[0].players.reduce((sum, p) => sum + p.ranking, 0);
+  newTeams[0].totalSkill = newTeams[0].players.reduce((sum, p) => sum + p.skill, 0);
   newTeams[0].totalTeamwork = newTeams[0].players.reduce((sum, p) => sum + p.teamwork, 0);
   
-  newTeams[1].totalRanking = newTeams[1].players.reduce((sum, p) => sum + p.ranking, 0);
+  newTeams[1].totalSkill = newTeams[1].players.reduce((sum, p) => sum + p.skill, 0);
   newTeams[1].totalTeamwork = newTeams[1].players.reduce((sum, p) => sum + p.teamwork, 0);
   
   return newTeams;

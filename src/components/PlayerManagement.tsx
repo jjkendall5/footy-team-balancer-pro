@@ -1,11 +1,11 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { Player } from "../types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Trash2, Plus } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface PlayerManagementProps {
   players: Player[];
@@ -18,38 +18,7 @@ const PlayerManagement: React.FC<PlayerManagementProps> = ({
   setPlayers, 
   onGenerateTeams 
 }) => {
-  const [newPlayerName, setNewPlayerName] = useState("");
-  
-  const addPlayer = () => {
-    if (!newPlayerName.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Player name cannot be empty",
-      });
-      return;
-    }
-    
-    if (players.length >= 16) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Maximum 16 players allowed",
-      });
-      return;
-    }
-    
-    const newPlayer: Player = {
-      id: Date.now().toString(),
-      name: newPlayerName,
-      ranking: 5, // Default values
-      teamwork: 5,
-      available: true,
-    };
-    
-    setPlayers([...players, newPlayer]);
-    setNewPlayerName("");
-  };
+  const isMobile = useIsMobile();
   
   const updatePlayer = (id: string, field: keyof Player, value: any) => {
     setPlayers(
@@ -59,8 +28,21 @@ const PlayerManagement: React.FC<PlayerManagementProps> = ({
     );
   };
   
-  const deletePlayer = (id: string) => {
-    setPlayers(players.filter((player) => player.id !== id));
+  const adjustValue = (id: string, field: "skill" | "teamwork", increment: boolean) => {
+    setPlayers(
+      players.map((player) => {
+        if (player.id === id) {
+          const currentValue = player[field];
+          let newValue = increment ? currentValue + 1 : currentValue - 1;
+          
+          // Ensure value stays between 1 and 10
+          newValue = Math.max(1, Math.min(10, newValue));
+          
+          return { ...player, [field]: newValue };
+        }
+        return player;
+      })
+    );
   };
   
   const handleGenerateTeams = () => {
@@ -82,30 +64,13 @@ const PlayerManagement: React.FC<PlayerManagementProps> = ({
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-center sm:text-left">Player Management</h2>
       
-      <div className="flex flex-col sm:flex-row gap-2 mb-4">
-        <Input
-          placeholder="Player name"
-          value={newPlayerName}
-          onChange={(e) => setNewPlayerName(e.target.value)}
-          className="flex-grow"
-          onKeyDown={(e) => {
-            if (e.key === "Enter") addPlayer();
-          }}
-        />
-        <Button onClick={addPlayer} className="w-full sm:w-auto">
-          <Plus size={16} className="mr-2" /> Add Player
-        </Button>
-      </div>
-      
       <div className="overflow-x-auto">
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-secondary">
               <th className="p-2 text-left">Name</th>
-              <th className="p-2 text-center">Ranking</th>
+              <th className="p-2 text-center">Skill</th>
               <th className="p-2 text-center">Teamwork</th>
-              <th className="p-2 text-center">Available</th>
-              <th className="p-2 text-center">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -119,49 +84,56 @@ const PlayerManagement: React.FC<PlayerManagementProps> = ({
                   />
                 </td>
                 <td className="p-2">
-                  <Input
-                    type="number"
-                    min="1"
-                    max="10"
-                    value={player.ranking}
-                    onChange={(e) => updatePlayer(player.id, "ranking", parseInt(e.target.value) || 1)}
-                    className="w-full"
-                  />
-                </td>
-                <td className="p-2">
-                  <Input
-                    type="number"
-                    min="1"
-                    max="10"
-                    value={player.teamwork}
-                    onChange={(e) => updatePlayer(player.id, "teamwork", parseInt(e.target.value) || 1)}
-                    className="w-full"
-                  />
-                </td>
-                <td className="p-2 text-center">
-                  <div className="flex justify-center">
-                    <Checkbox
-                      checked={player.available}
-                      onCheckedChange={(checked) => 
-                        updatePlayer(player.id, "available", !!checked)
-                      }
-                    />
+                  <div className="flex items-center justify-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 w-8 p-0 rounded-full"
+                      onClick={() => adjustValue(player.id, "skill", false)}
+                      disabled={player.skill <= 1}
+                    >
+                      <Minus size={16} />
+                    </Button>
+                    <div className="w-8 text-center font-medium">{player.skill}</div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 w-8 p-0 rounded-full"
+                      onClick={() => adjustValue(player.id, "skill", true)}
+                      disabled={player.skill >= 10}
+                    >
+                      <Plus size={16} />
+                    </Button>
                   </div>
                 </td>
-                <td className="p-2 text-center">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => deletePlayer(player.id)}
-                  >
-                    <Trash2 size={16} className="text-red-500" />
-                  </Button>
+                <td className="p-2">
+                  <div className="flex items-center justify-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 w-8 p-0 rounded-full"
+                      onClick={() => adjustValue(player.id, "teamwork", false)}
+                      disabled={player.teamwork <= 1}
+                    >
+                      <Minus size={16} />
+                    </Button>
+                    <div className="w-8 text-center font-medium">{player.teamwork}</div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 w-8 p-0 rounded-full"
+                      onClick={() => adjustValue(player.id, "teamwork", true)}
+                      disabled={player.teamwork >= 10}
+                    >
+                      <Plus size={16} />
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ))}
             {players.length === 0 && (
               <tr>
-                <td colSpan={5} className="p-4 text-center text-gray-500">
+                <td colSpan={3} className="p-4 text-center text-gray-500">
                   No players added yet
                 </td>
               </tr>

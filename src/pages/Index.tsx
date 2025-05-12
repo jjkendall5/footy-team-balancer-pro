@@ -9,30 +9,30 @@ import { toast } from "@/components/ui/use-toast";
 
 const Index: React.FC = () => {
   const [players, setPlayers] = useState<Player[]>([
-    // Pre-populate with example players
-    { id: "1", name: "Player 1", ranking: 8, teamwork: 6, available: true },
-    { id: "2", name: "Player 2", ranking: 7, teamwork: 8, available: true },
-    { id: "3", name: "Player 3", ranking: 9, teamwork: 5, available: true },
-    { id: "4", name: "Player 4", ranking: 6, teamwork: 7, available: true },
-    { id: "5", name: "Player 5", ranking: 5, teamwork: 9, available: true },
-    { id: "6", name: "Player 6", ranking: 7, teamwork: 6, available: true },
-    { id: "7", name: "Player 7", ranking: 4, teamwork: 8, available: true },
-    { id: "8", name: "Player 8", ranking: 6, teamwork: 5, available: true },
-    { id: "9", name: "Player 9", ranking: 8, teamwork: 7, available: true },
-    { id: "10", name: "Player 10", ranking: 5, teamwork: 6, available: true },
-    { id: "11", name: "Player 11", ranking: 7, teamwork: 5, available: true },
-    { id: "12", name: "Player 12", ranking: 6, teamwork: 7, available: true },
-    { id: "13", name: "Player 13", ranking: 8, teamwork: 8, available: true },
-    { id: "14", name: "Player 14", ranking: 6, teamwork: 6, available: true },
-    { id: "15", name: "Player 15", ranking: 5, teamwork: 9, available: true },
-    { id: "16", name: "Player 16", ranking: 7, teamwork: 7, available: true },
+    // Pre-populate with example players, changed from ranking to skill
+    { id: "1", name: "Player 1", skill: 8, teamwork: 6, available: true },
+    { id: "2", name: "Player 2", skill: 7, teamwork: 8, available: true },
+    { id: "3", name: "Player 3", skill: 9, teamwork: 5, available: true },
+    { id: "4", name: "Player 4", skill: 6, teamwork: 7, available: true },
+    { id: "5", name: "Player 5", skill: 5, teamwork: 9, available: true },
+    { id: "6", name: "Player 6", skill: 7, teamwork: 6, available: true },
+    { id: "7", name: "Player 7", skill: 4, teamwork: 8, available: true },
+    { id: "8", name: "Player 8", skill: 6, teamwork: 5, available: true },
+    { id: "9", name: "Player 9", skill: 8, teamwork: 7, available: true },
+    { id: "10", name: "Player 10", skill: 5, teamwork: 6, available: true },
+    { id: "11", name: "Player 11", skill: 7, teamwork: 5, available: true },
+    { id: "12", name: "Player 12", skill: 6, teamwork: 7, available: true },
+    { id: "13", name: "Player 13", skill: 8, teamwork: 8, available: true },
+    { id: "14", name: "Player 14", skill: 6, teamwork: 6, available: true },
+    { id: "15", name: "Player 15", skill: 5, teamwork: 9, available: true },
+    { id: "16", name: "Player 16", skill: 7, teamwork: 7, available: true },
   ]);
   
   const [teams, setTeams] = useState<[Team, Team] | null>(null);
   const [showResults, setShowResults] = useState(false);
   
   const handleGenerateTeams = () => {
-    const availablePlayers = players.filter((p) => p.available);
+    const availablePlayers = players.filter(player => player.available);
     
     if (availablePlayers.length < 2) {
       toast({

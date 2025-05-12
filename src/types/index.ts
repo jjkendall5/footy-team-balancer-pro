@@ -2,13 +2,13 @@
 export interface Player {
   id: string;
   name: string;
-  ranking: number;
+  skill: number; // Changed from ranking to skill
   teamwork: number;
-  available: boolean;
+  available: boolean; // Keeping this field for team generation logic
 }
 
 export interface Team {
   players: Player[];
-  totalRanking: number;
+  totalSkill: number; // Updated from totalRanking
   totalTeamwork: number;
 }
