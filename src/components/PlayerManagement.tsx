@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Player } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -34,14 +35,23 @@ const PlayerManagement: React.FC<PlayerManagementProps> = ({
     // Find the updated player
     const playerToUpdate = updatedPlayers.find(p => p.id === id);
     if (playerToUpdate) {
-      // Update in database
-      await updatePlayerInDb(playerToUpdate).catch(() => {
+      try {
+        // Update in database
+        const success = await updatePlayerInDb(playerToUpdate);
+        if (!success) {
+          throw new Error("Failed to update player");
+        }
+      } catch (error) {
+        console.error("Error updating player:", error);
         toast({
           variant: "destructive",
           title: "Error",
           description: "Failed to update player in database",
         });
-      });
+        
+        // Revert state on error
+        setPlayers(players);
+      }
     }
   };
   
@@ -63,14 +73,23 @@ const PlayerManagement: React.FC<PlayerManagementProps> = ({
       
       setPlayers(updatedPlayers);
       
-      // Update in database
-      await updatePlayerInDb(updatedPlayer).catch(() => {
+      try {
+        // Update in database
+        const success = await updatePlayerInDb(updatedPlayer);
+        if (!success) {
+          throw new Error("Failed to update player");
+        }
+      } catch (error) {
+        console.error("Error updating player:", error);
         toast({
           variant: "destructive",
           title: "Error", 
           description: "Failed to update player in database",
         });
-      });
+        
+        // Revert state on error
+        setPlayers(players);
+      }
     }
   };
   

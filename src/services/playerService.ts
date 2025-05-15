@@ -33,7 +33,7 @@ export const mapPlayerToDbPlayer = (player: Player): Omit<DbPlayer, 'created_at'
     skill: player.skill,
     teamwork: player.teamwork,
     playing: player.available, // Map available app field to playing DB field
-    is_goalkeeper: player.isGoalkeeper || false,
+    is_goalkeeper: player.isGoalkeeper,
   };
 };
 
@@ -79,7 +79,13 @@ export const updatePlayer = async (player: Player): Promise<boolean> => {
   
   const { error } = await supabase
     .from('players')
-    .update(dbPlayer)
+    .update({
+      name: dbPlayer.name,
+      skill: dbPlayer.skill,
+      teamwork: dbPlayer.teamwork,
+      playing: dbPlayer.playing,
+      is_goalkeeper: dbPlayer.is_goalkeeper
+    })
     .eq('id', player.id);
   
   if (error) {
