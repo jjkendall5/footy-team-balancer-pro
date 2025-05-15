@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Player } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -149,8 +148,6 @@ const PlayerManagement: React.FC<PlayerManagementProps> = ({
   
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-center sm:text-left">Player Management</h2>
-      
       <AddPlayerForm onAddPlayer={handleAddPlayer} disabled={isLoading} />
       
       {isLoading ? (

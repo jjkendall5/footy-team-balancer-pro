@@ -18,7 +18,8 @@ const PlayerTable: React.FC<PlayerTableProps> = ({
 }) => {
   return (
     <div className="overflow-x-auto">
-      <table className="w-full border-collapse">
+      {/* Desktop table */}
+      <table className="w-full border-collapse hidden md:table">
         <thead>
           <tr className="bg-secondary">
             <th className="p-2 text-left">Name</th>
@@ -41,6 +42,19 @@ const PlayerTable: React.FC<PlayerTableProps> = ({
           ))}
         </tbody>
       </table>
+      
+      {/* Mobile layout */}
+      <div className="md:hidden">
+        {players.map((player) => (
+          <PlayerRow
+            key={player.id}
+            player={player}
+            updatePlayerField={updatePlayerField}
+            adjustValue={adjustValue}
+            onRemove={onRemovePlayer}
+          />
+        ))}
+      </div>
     </div>
   );
 };
