@@ -4,7 +4,7 @@ import { Team } from "../types";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, RefreshCw, Radio } from "lucide-react";
+import { ArrowLeft, RefreshCw, Radio, ShieldAlert } from "lucide-react";
 
 interface TeamResultsProps {
   teams: [Team, Team];
@@ -70,25 +70,33 @@ const TeamResults: React.FC<TeamResultsProps> = ({
       
       <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3 text-center mb-6">
         <p className="text-sm font-medium text-yellow-800">
-          Rating Scale: 1-10 (10 is highest) | S = Skill | T = Teamwork
+          Rating Scale: 1-10 (10 is highest) | S = Skill | T = Teamwork | GK = Goalkeeper
         </p>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Team A */}
-        <div className="border rounded-lg p-4 bg-blue-50">
+        <div className="border rounded-lg p-4 bg-blue-50 shadow-sm">
           <div className="flex justify-between items-center mb-3">
             <h3 className="text-xl font-bold text-blue-800">Team Blue</h3>
-            {teams[0].wearsBibs && (
-              <div className="flex items-center px-2 py-1 bg-yellow-200 rounded-full">
-                <Radio size={14} className="mr-1" />
-                <span className="text-xs font-medium">Bibs</span>
-              </div>
-            )}
+            <div className="flex items-center gap-2">
+              {teams[0].hasGoalkeeper && (
+                <div className="flex items-center px-2 py-1 bg-green-100 text-green-800 rounded-full">
+                  <ShieldAlert size={14} className="mr-1" />
+                  <span className="text-xs font-medium">GK</span>
+                </div>
+              )}
+              {teams[0].wearsBibs && (
+                <div className="flex items-center px-2 py-1 bg-yellow-200 rounded-full">
+                  <Radio size={14} className="mr-1" />
+                  <span className="text-xs font-medium">Bibs</span>
+                </div>
+              )}
+            </div>
           </div>
           
           {showScores && (
-            <div className="flex justify-around mb-4 text-sm">
+            <div className="flex justify-around mb-4 text-sm bg-blue-100 rounded-md p-2">
               <div className="text-center">
                 <p className="font-semibold">Total Skill</p>
                 <p className="text-lg font-bold">{teams[0].totalSkill}</p>
@@ -112,7 +120,12 @@ const TeamResults: React.FC<TeamResultsProps> = ({
                 }`}
               >
                 <div className="flex justify-between items-center">
-                  <span className="font-medium">{player.name}</span>
+                  <div className="flex items-center">
+                    <span className="font-medium">{player.name}</span>
+                    {player.isGoalkeeper && (
+                      <span className="ml-2 px-1.5 py-0.5 bg-green-100 text-green-800 text-xs rounded">GK</span>
+                    )}
+                  </div>
                   {showScores && (
                     <span className="text-sm text-gray-600">
                       S: {player.skill} | T: {player.teamwork}
@@ -125,19 +138,27 @@ const TeamResults: React.FC<TeamResultsProps> = ({
         </div>
         
         {/* Team B */}
-        <div className="border rounded-lg p-4 bg-red-50">
+        <div className="border rounded-lg p-4 bg-red-50 shadow-sm">
           <div className="flex justify-between items-center mb-3">
             <h3 className="text-xl font-bold text-red-800">Team Red</h3>
-            {teams[1].wearsBibs && (
-              <div className="flex items-center px-2 py-1 bg-yellow-200 rounded-full">
-                <Radio size={14} className="mr-1" />
-                <span className="text-xs font-medium">Bibs</span>
-              </div>
-            )}
+            <div className="flex items-center gap-2">
+              {teams[1].hasGoalkeeper && (
+                <div className="flex items-center px-2 py-1 bg-green-100 text-green-800 rounded-full">
+                  <ShieldAlert size={14} className="mr-1" />
+                  <span className="text-xs font-medium">GK</span>
+                </div>
+              )}
+              {teams[1].wearsBibs && (
+                <div className="flex items-center px-2 py-1 bg-yellow-200 rounded-full">
+                  <Radio size={14} className="mr-1" />
+                  <span className="text-xs font-medium">Bibs</span>
+                </div>
+              )}
+            </div>
           </div>
           
           {showScores && (
-            <div className="flex justify-around mb-4 text-sm">
+            <div className="flex justify-around mb-4 text-sm bg-red-100 rounded-md p-2">
               <div className="text-center">
                 <p className="font-semibold">Total Skill</p>
                 <p className="text-lg font-bold">{teams[1].totalSkill}</p>
@@ -161,7 +182,12 @@ const TeamResults: React.FC<TeamResultsProps> = ({
                 }`}
               >
                 <div className="flex justify-between items-center">
-                  <span className="font-medium">{player.name}</span>
+                  <div className="flex items-center">
+                    <span className="font-medium">{player.name}</span>
+                    {player.isGoalkeeper && (
+                      <span className="ml-2 px-1.5 py-0.5 bg-green-100 text-green-800 text-xs rounded">GK</span>
+                    )}
+                  </div>
                   {showScores && (
                     <span className="text-sm text-gray-600">
                       S: {player.skill} | T: {player.teamwork}

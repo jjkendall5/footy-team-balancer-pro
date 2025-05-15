@@ -2,14 +2,16 @@
 export interface Player {
   id: string;
   name: string;
-  skill: number; // Changed from ranking to skill
+  skill: number;
   teamwork: number;
-  available: boolean; 
+  available: boolean;
+  isGoalkeeper?: boolean;
 }
 
 export interface Team {
   players: Player[];
-  totalSkill: number; // Updated from totalRanking
+  totalSkill: number;
   totalTeamwork: number;
-  wearsBibs?: boolean; // New property to track which team wears bibs
+  wearsBibs?: boolean;
+  hasGoalkeeper?: boolean;
 }

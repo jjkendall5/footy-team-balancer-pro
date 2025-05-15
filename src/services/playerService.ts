@@ -8,6 +8,7 @@ export interface DbPlayer {
   skill: number;
   teamwork: number;
   playing: boolean;
+  is_goalkeeper?: boolean;
   created_at?: string;
   updated_at?: string;
 }
@@ -20,6 +21,7 @@ export const mapDbPlayerToPlayer = (dbPlayer: DbPlayer): Player => {
     skill: dbPlayer.skill,
     teamwork: dbPlayer.teamwork,
     available: dbPlayer.playing, // Map playing DB field to available app field
+    isGoalkeeper: dbPlayer.is_goalkeeper || false,
   };
 };
 
@@ -31,6 +33,7 @@ export const mapPlayerToDbPlayer = (player: Player): Omit<DbPlayer, 'created_at'
     skill: player.skill,
     teamwork: player.teamwork,
     playing: player.available, // Map available app field to playing DB field
+    is_goalkeeper: player.isGoalkeeper || false,
   };
 };
 
@@ -54,6 +57,7 @@ export const createPlayer = async (player: Omit<Player, 'id'>): Promise<Player |
     skill: player.skill,
     teamwork: player.teamwork,
     playing: player.available,
+    is_goalkeeper: player.isGoalkeeper || false,
   };
   
   const { data, error } = await supabase

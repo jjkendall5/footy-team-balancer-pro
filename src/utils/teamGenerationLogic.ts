@@ -5,8 +5,12 @@ export const generateTeams = (players: Player[]): [Team, Team] => {
   // Filter only available players
   const availablePlayers = players.filter(player => player.available);
   
+  // Filter goalkeepers and outfield players
+  const goalkeepers = availablePlayers.filter(player => player.isGoalkeeper);
+  const outfieldPlayers = availablePlayers.filter(player => !player.isGoalkeeper);
+  
   // Sort players by combined score (skill + teamwork) descending
-  const sortedPlayers = [...availablePlayers].sort((a, b) => {
+  const sortedPlayers = [...outfieldPlayers].sort((a, b) => {
     const combinedScoreA = a.skill + a.teamwork;
     const combinedScoreB = b.skill + b.teamwork;
     return combinedScoreB - combinedScoreA;
@@ -19,8 +23,33 @@ export const generateTeams = (players: Player[]): [Team, Team] => {
   let teamATotal = { skill: 0, teamwork: 0 };
   let teamBTotal = { skill: 0, teamwork: 0 };
 
-  // Distribute players using alternating selection (best player to team A, 2nd best to team B, etc.)
-  // Also considering the current team totals to balance teams
+  // First, distribute goalkeepers if available
+  if (goalkeepers.length > 0) {
+    // Sort goalkeepers by skill (most skilled first)
+    const sortedGKs = [...goalkeepers].sort((a, b) => b.skill - a.skill);
+    
+    // If there's at least one goalkeeper, give the best one to team A
+    if (sortedGKs.length >= 1) {
+      teamA.push(sortedGKs[0]);
+      teamATotal.skill += sortedGKs[0].skill;
+      teamATotal.teamwork += sortedGKs[0].teamwork;
+    }
+    
+    // If there's a second goalkeeper, give it to team B
+    if (sortedGKs.length >= 2) {
+      teamB.push(sortedGKs[1]);
+      teamBTotal.skill += sortedGKs[1].skill;
+      teamBTotal.teamwork += sortedGKs[1].teamwork;
+      
+      // Add any remaining goalkeepers to the outfield distribution pool
+      sortedPlayers.push(...sortedGKs.slice(2));
+    } else {
+      // If there's only one goalkeeper, add remaining outfield players
+      sortedPlayers.push(...sortedGKs.slice(1));
+    }
+  }
+
+  // Distribute remaining players using snake draft to balance teams
   sortedPlayers.forEach((player) => {
     const playerValue = { skill: player.skill, teamwork: player.teamwork };
     
@@ -61,13 +90,15 @@ export const generateTeams = (players: Player[]): [Team, Team] => {
       players: teamA, 
       totalSkill: teamATotal.skill, 
       totalTeamwork: teamATotal.teamwork,
-      wearsBibs: teamAWearsBibs
+      wearsBibs: teamAWearsBibs,
+      hasGoalkeeper: teamA.some(p => p.isGoalkeeper)
     },
     { 
       players: teamB, 
       totalSkill: teamBTotal.skill, 
       totalTeamwork: teamBTotal.teamwork,
-      wearsBibs: !teamAWearsBibs
+      wearsBibs: !teamAWearsBibs,
+      hasGoalkeeper: teamB.some(p => p.isGoalkeeper)
     }
   ];
 };
@@ -95,6 +126,10 @@ export const swapPlayers = (
   
   newTeams[1].totalSkill = newTeams[1].players.reduce((sum, p) => sum + p.skill, 0);
   newTeams[1].totalTeamwork = newTeams[1].players.reduce((sum, p) => sum + p.teamwork, 0);
+  
+  // Recalculate goalkeeper status
+  newTeams[0].hasGoalkeeper = newTeams[0].players.some(p => p.isGoalkeeper);
+  newTeams[1].hasGoalkeeper = newTeams[1].players.some(p => p.isGoalkeeper);
   
   // Keep the same bib assignment
   newTeams[0].wearsBibs = teams[0].wearsBibs;
