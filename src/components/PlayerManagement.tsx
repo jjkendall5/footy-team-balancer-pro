@@ -7,7 +7,7 @@ import { Plus, Minus, Trash2, UserPlus } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Checkbox } from "@/components/ui/checkbox";
-import { createPlayer, deletePlayer, updatePlayer } from "@/services/playerService";
+import { createPlayer, deletePlayer, updatePlayer as updatePlayerInDb } from "@/services/playerService";
 
 interface PlayerManagementProps {
   players: Player[];
@@ -25,7 +25,7 @@ const PlayerManagement: React.FC<PlayerManagementProps> = ({
   const isMobile = useIsMobile();
   const [newPlayerName, setNewPlayerName] = useState("");
   
-  const updatePlayer = async (id: string, field: keyof Player, value: any) => {
+  const updatePlayerField = async (id: string, field: keyof Player, value: any) => {
     const updatedPlayers = players.map((player) => {
       if (player.id === id) {
         return { ...player, [field]: value };
@@ -39,7 +39,7 @@ const PlayerManagement: React.FC<PlayerManagementProps> = ({
     const playerToUpdate = updatedPlayers.find(p => p.id === id);
     if (playerToUpdate) {
       // Update in database
-      await updatePlayer(playerToUpdate).catch(() => {
+      await updatePlayerInDb(playerToUpdate).catch(() => {
         toast({
           variant: "destructive",
           title: "Error",
@@ -68,7 +68,7 @@ const PlayerManagement: React.FC<PlayerManagementProps> = ({
       setPlayers(updatedPlayers);
       
       // Update in database
-      await updatePlayer(updatedPlayer).catch(() => {
+      await updatePlayerInDb(updatedPlayer).catch(() => {
         toast({
           variant: "destructive",
           title: "Error", 
@@ -198,7 +198,7 @@ const PlayerManagement: React.FC<PlayerManagementProps> = ({
                   <td className="p-2">
                     <Input
                       value={player.name}
-                      onChange={(e) => updatePlayer(player.id, "name", e.target.value)}
+                      onChange={(e) => updatePlayerField(player.id, "name", e.target.value)}
                       className="w-full"
                     />
                   </td>
@@ -252,7 +252,7 @@ const PlayerManagement: React.FC<PlayerManagementProps> = ({
                     <div className="flex items-center justify-center">
                       <Checkbox
                         checked={player.available}
-                        onCheckedChange={(checked) => updatePlayer(player.id, "available", Boolean(checked))}
+                        onCheckedChange={(checked) => updatePlayerField(player.id, "available", Boolean(checked))}
                       />
                     </div>
                   </td>
