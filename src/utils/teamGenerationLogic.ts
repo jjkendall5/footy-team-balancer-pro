@@ -1,4 +1,3 @@
-
 import { Player, Team } from "../types";
 
 // Generate two balanced teams from available players
@@ -53,17 +52,22 @@ export const generateTeams = (players: Player[]): [Team, Team] => {
       teamBTotal = teamBProjected;
     }
   });
-
+  
+  // Randomly decide which team wears bibs (50% chance either way)
+  const teamAWearsBibs = Math.random() >= 0.5;
+  
   return [
     { 
       players: teamA, 
       totalSkill: teamATotal.skill, 
-      totalTeamwork: teamATotal.teamwork 
+      totalTeamwork: teamATotal.teamwork,
+      wearsBibs: teamAWearsBibs
     },
     { 
       players: teamB, 
       totalSkill: teamBTotal.skill, 
-      totalTeamwork: teamBTotal.teamwork 
+      totalTeamwork: teamBTotal.teamwork,
+      wearsBibs: !teamAWearsBibs
     }
   ];
 };
@@ -91,6 +95,10 @@ export const swapPlayers = (
   
   newTeams[1].totalSkill = newTeams[1].players.reduce((sum, p) => sum + p.skill, 0);
   newTeams[1].totalTeamwork = newTeams[1].players.reduce((sum, p) => sum + p.teamwork, 0);
+  
+  // Keep the same bib assignment
+  newTeams[0].wearsBibs = teams[0].wearsBibs;
+  newTeams[1].wearsBibs = teams[1].wearsBibs;
   
   return newTeams;
 };

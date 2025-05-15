@@ -4,7 +4,7 @@ import { Team } from "../types";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, RefreshCw } from "lucide-react";
+import { ArrowLeft, RefreshCw, Radio } from "lucide-react";
 
 interface TeamResultsProps {
   teams: [Team, Team];
@@ -77,7 +77,15 @@ const TeamResults: React.FC<TeamResultsProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Team A */}
         <div className="border rounded-lg p-4 bg-blue-50">
-          <h3 className="text-xl font-bold text-blue-800 mb-3 text-center">Team Blue</h3>
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="text-xl font-bold text-blue-800">Team Blue</h3>
+            {teams[0].wearsBibs && (
+              <div className="flex items-center px-2 py-1 bg-yellow-200 rounded-full">
+                <Radio size={14} className="mr-1" />
+                <span className="text-xs font-medium">Bibs</span>
+              </div>
+            )}
+          </div>
           
           {showScores && (
             <div className="flex justify-around mb-4 text-sm">
@@ -118,7 +126,15 @@ const TeamResults: React.FC<TeamResultsProps> = ({
         
         {/* Team B */}
         <div className="border rounded-lg p-4 bg-red-50">
-          <h3 className="text-xl font-bold text-red-800 mb-3 text-center">Team Red</h3>
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="text-xl font-bold text-red-800">Team Red</h3>
+            {teams[1].wearsBibs && (
+              <div className="flex items-center px-2 py-1 bg-yellow-200 rounded-full">
+                <Radio size={14} className="mr-1" />
+                <span className="text-xs font-medium">Bibs</span>
+              </div>
+            )}
+          </div>
           
           {showScores && (
             <div className="flex justify-around mb-4 text-sm">

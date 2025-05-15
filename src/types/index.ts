@@ -4,11 +4,12 @@ export interface Player {
   name: string;
   skill: number; // Changed from ranking to skill
   teamwork: number;
-  available: boolean; // Keeping this field for team generation logic
+  available: boolean; 
 }
 
 export interface Team {
   players: Player[];
   totalSkill: number; // Updated from totalRanking
   totalTeamwork: number;
+  wearsBibs?: boolean; // New property to track which team wears bibs
 }
