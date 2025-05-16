@@ -13,6 +13,7 @@ export type Database = {
         Row: {
           created_at: string | null
           id: string
+          is_goalkeeper: boolean | null
           name: string
           playing: boolean
           skill: number
@@ -22,6 +23,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           id?: string
+          is_goalkeeper?: boolean | null
           name: string
           playing?: boolean
           skill: number
@@ -31,6 +33,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           id?: string
+          is_goalkeeper?: boolean | null
           name?: string
           playing?: boolean
           skill?: number
