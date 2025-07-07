@@ -38,17 +38,34 @@ export const mapPlayerToDbPlayer = (player: Player): Omit<DbPlayer, 'created_at'
 };
 
 export const fetchPlayers = async (): Promise<Player[]> => {
-  const { data, error } = await supabase
-    .from('players')
-    .select('*')
-    .order('name');
-  
-  if (error) {
-    console.error('Error fetching players:', error);
+  try {
+    const { data, error } = await supabase
+      .from('players')
+      .select('*')
+      .order('name');
+    
+    if (error) {
+      console.error('Error fetching players:', error);
+      // Try to reconnect and retry once
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const { data: retryData, error: retryError } = await supabase
+        .from('players')
+        .select('*')
+        .order('name');
+      
+      if (retryError) {
+        console.error('Retry failed:', retryError);
+        return [];
+      }
+      
+      return (retryData as DbPlayer[]).map(mapDbPlayerToPlayer);
+    }
+    
+    return (data as DbPlayer[]).map(mapDbPlayerToPlayer);
+  } catch (error) {
+    console.error('Unexpected error fetching players:', error);
     return [];
   }
-  
-  return (data as DbPlayer[]).map(mapDbPlayerToPlayer);
 };
 
 export const createPlayer = async (player: Omit<Player, 'id'>): Promise<Player | null> => {
